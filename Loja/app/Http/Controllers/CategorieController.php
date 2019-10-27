@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Categorie;
 use App\Traits\GenericCrud;
 use SoapClient;
+use SoapHeader;
 
 class CategorieController extends Controller
 {
@@ -37,19 +38,33 @@ class CategorieController extends Controller
     public function serasa()
     {
         try {
-            $webserviceURL = "https://treina.spc.org.br/spc/remoting/ws/consulta/consultaWebService?wsdl";
-            $client = new SoapClient($webserviceURL, array("login" => "XXX", "password" => "XXX"));
+            $login = 'XXXXXXX';
+            $password ='XXXXXX';
+//            $authorization = base64_encode("$login:$password");
+//            $authorization = "Basic $authorization";
+            $webserviceURL = "https://servicos.spc.org.br/spc/remoting/ws/consulta/consultaWebService?wsdl";
+            $client = new SoapClient($webserviceURL, array(
+                'trace'=>1,
+                'cache_wsdl'=>WSDL_CACHE_NONE,
+                'login'=>$login,
+                'password'=>$password
+            ));
+            dd('stop');
             $function = 'Consultar';
-            $s1 = '325';
-            $s2 = 'F';
-            $s3 = '00752477714';
-            $arguments= array('ns1:filtro' => array('codigo-produto' => ''.$s1 .'','tipo-consumidor' => ''.$s2 .'','documento-consumidor' => ''.$s3 .''));
+            $code = '325';
+            $typePerson = 'F';
+            $cpf = '00752477714';
+            $arguments= array('ns1:filtro' => array(
+                'codigo-produto' => ''.$code .'',
+                'tipo-consumidor' => ''.$typePerson .'',
+                'documento-consumidor' => ''.$cpf .''
+            ));
             $result = $client->__soapCall($function, $arguments);
             $txt = SimpleXML_Load_String($result);
             echo 'Response: ';
             print_r($arguments);
         } catch (\SoapFault $e) {
-            dd('deu ruim');
+            echo $e->getMessage();
         }
     }
 }
