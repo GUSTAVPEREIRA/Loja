@@ -18,7 +18,7 @@ Route::get('/', function () {
 Route::prefix('register')->group(function () {
     //=======================================Category=======================================
     $controller = 'CategorieController';
-   Route::get('category', "$controller@index");
+   Route::get('category', "$controller@serasa");
    Route::get('category/add', "$controller@modal")->name('category.modal');
    Route::get('category/create', "$controller@store")->name('category.add');
    Route::get('category/show', "$controller@show")->name('category.show');
